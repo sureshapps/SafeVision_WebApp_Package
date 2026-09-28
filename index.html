@@ -1,43 +1,112 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SafeVision — AI-AR Predictive Safety (Web Demo)</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0e1b2c" />
+<title>SafeVision — AI-AR Predictive Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>SafeVision — AI+WebAR Predictive Safety</h1>
-    <p>Web demo: uses your webcam + TensorFlow.js object detection to simulate hazard alerts and AR overlays.</p>
-  </header>
+<header class="bar">
+  <button class="brand" data-go="welcome" aria-label="SafeVision home">SafeVision</button>
+  <nav aria-label="Main">
+    <button data-go="detect">Detect</button>
+    <button data-go="settings">Settings</button>
+    <button data-go="info">Info</button>
+  </nav>
+</header>
 
-  <main>
-    <section id="controls">
-      <button id="startBtn">Start Camera & Detect</button>
-      <button id="stopBtn" disabled>Stop</button>
-      <label><input type="checkbox" id="showBoxes" checked/> Show detection boxes</label>
-    </section>
+<main>
+  <section class="view" id="welcome" data-view="welcome">
+    <div class="tape" aria-hidden="true"></div>
+    <div class="hero">
+      <h1>See the hazard<br>before it reaches you.</h1>
+      <p class="lede">SafeVision reads your camera feed, spots people, vehicles and obstacles, and flags anything getting too close. All in your browser. Nothing leaves your device.</p>
+      <div class="actions">
+        <button class="primary" data-go="detect" data-autostart>Start detecting</button>
+        <button class="ghost" data-go="info">How it works</button>
+      </div>
+      <ul class="facts">
+        <li><b>On-device</b> Video is never uploaded.</li>
+        <li><b>Live</b> Alerts update every frame.</li>
+        <li><b>Tunable</b> Choose what counts as a hazard.</li>
+      </ul>
+    </div>
+    <div class="tape" aria-hidden="true"></div>
+  </section>
 
-    <section id="video-area">
-      <video id="video" autoplay playsinline></video>
+  <section class="view" id="detect" data-view="detect" hidden>
+    <div class="stage">
+      <video id="video" autoplay playsinline muted></video>
       <canvas id="overlay"></canvas>
-    </section>
+      <div id="alert" class="alert" role="alert" aria-live="assertive" hidden></div>
+      <div id="idle" class="idle">
+        <p id="idleMsg">Camera is off.</p>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="startBtn" class="primary">Start camera</button>
+      <button id="stopBtn" class="ghost" disabled>Stop</button>
+      <label class="check"><input type="checkbox" id="showBoxes" /> Show boxes</label>
+      <span id="stats" class="stats" aria-live="polite">Ready</span>
+    </div>
+    <p id="error" class="error" role="status" hidden></p>
+  </section>
 
-    <section id="explain">
-      <h2>How this demo works</h2>
-      <ol>
-        <li>Loads a pre-trained COCO-SSD model (TensorFlow.js) in browser.</li>
-        <li>Runs real-time detection on webcam frames.</li>
-        <li>If certain classes (e.g., person, bicycle, car) are detected close, it shows AR-style warnings and predictive alert boxes.</li>
-      </ol>
-      <p>Note: This is a prototype/demo — replace COCO-SSD with a domain-specific hazard model for production.</p>
-    </section>
-  </main>
+  <section class="view" id="settings" data-view="settings" hidden>
+    <h2>Settings</h2>
+    <p class="sub">Saved on this device. Changes apply immediately.</p>
+    <div class="grid">
+      <fieldset>
+        <legend>Detection</legend>
+        <label>Minimum confidence <output id="confOut"></output>
+          <input type="range" id="conf" min="30" max="95" step="5" />
+        </label>
+        <label>Alert distance <output id="sizeOut"></output>
+          <input type="range" id="size" min="1" max="40" step="1" />
+          <small>An object triggers an alert when it fills this much of the frame. Lower alerts sooner.</small>
+        </label>
+        <label>Camera
+          <select id="facing">
+            <option value="environment">Rear camera</option>
+            <option value="user">Front camera</option>
+          </select>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Alerts</legend>
+        <label class="check"><input type="checkbox" id="showBoxes2" /> Show detection boxes</label>
+        <label class="check"><input type="checkbox" id="voice" /> Spoken warnings</label>
+        <label class="check"><input type="checkbox" id="beep" /> Warning beep</label>
+        <label class="check"><input type="checkbox" id="vibrate" /> Vibrate (phones)</label>
+      </fieldset>
+      <fieldset class="wide">
+        <legend>Objects that count as hazards</legend>
+        <div id="classes" class="chips"></div>
+      </fieldset>
+    </div>
+    <button id="reset" class="ghost">Reset to defaults</button>
+  </section>
 
-  <footer>
-    <p>SafeVision — Prototype • For demo only</p>
-  </footer>
+  <section class="view" id="info" data-view="info" hidden>
+    <h2>How SafeVision works</h2>
+    <ol class="steps">
+      <li><b>Look.</b> Your camera frames are analysed by COCO-SSD, a pre-trained model running through TensorFlow.js.</li>
+      <li><b>Judge.</b> The larger an object appears in the frame, the closer it probably is. Big, confident detections of hazard objects trigger an alert.</li>
+      <li><b>Warn.</b> A red overlay marks the hazard, a banner names it, and optional voice, beep or vibration gets your attention.</li>
+    </ol>
+    <div class="grid">
+      <div class="note"><h3>Privacy</h3><p>Video stays in your browser. Only the model files are downloaded, once, when you first start.</p></div>
+      <div class="note"><h3>Limits</h3><p>Distance is estimated from object size, not measured. Speed, direction and lighting are not considered. Expect false alarms and misses.</p></div>
+      <div class="note warn"><h3>Not a safety device</h3><p>This is a prototype. Never rely on it for driving, cycling or walking. Stay aware of your surroundings.</p></div>
+      <div class="note"><h3>Built with</h3><p>TensorFlow.js, COCO-SSD, HTML, CSS, JavaScript and a canvas overlay. Future plans: a hazard-specific model, sensor fusion, a mobile PWA and WebXR.</p></div>
+    </div>
+    <p class="sub">Camera access needs HTTPS or <code>localhost</code>. Run <code>python -m http.server 8000</code> in this folder, then open <code>http://localhost:8000</code>.</p>
+  </section>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
