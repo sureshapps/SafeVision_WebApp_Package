@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SafeVision — AI-AR Predictive Safety (Web Demo)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>SafeVision — AI+WebAR Predictive Safety</h1>
+    <p>Web demo: uses your webcam + TensorFlow.js object detection to simulate hazard alerts and AR overlays.</p>
+  </header>
+
+  <main>
+    <section id="controls">
+      <button id="startBtn">Start Camera & Detect</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <label><input type="checkbox" id="showBoxes" checked/> Show detection boxes</label>
+    </section>
+
+    <section id="video-area">
+      <video id="video" autoplay playsinline></video>
+      <canvas id="overlay"></canvas>
+    </section>
+
+    <section id="explain">
+      <h2>How this demo works</h2>
+      <ol>
+        <li>Loads a pre-trained COCO-SSD model (TensorFlow.js) in browser.</li>
+        <li>Runs real-time detection on webcam frames.</li>
+        <li>If certain classes (e.g., person, bicycle, car) are detected close, it shows AR-style warnings and predictive alert boxes.</li>
+      </ol>
+      <p>Note: This is a prototype/demo — replace COCO-SSD with a domain-specific hazard model for production.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>SafeVision — Prototype • For demo only</p>
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

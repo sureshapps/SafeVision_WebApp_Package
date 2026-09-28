@@ -1,0 +1,21 @@
+SafeVision Demo Script (2-3 minutes)
+
+Slide 1 (0:00-0:15) — Intro
+- "Hi, I'm <Your Name>. This is SafeVision — an AI + AR prototype for predictive safety."
+
+Slide 2 (0:15-0:35) — Problem
+- Quick stat or sentence: many accidents due to missed hazards.
+
+Slide 3 (0:35-0:55) — Solution
+- Explain detection + AR overlay idea and benefits.
+
+Slide 4 (0:55-1:45) — Live Demo (record screen)
+- Show index.html, click start, allow camera.
+- Walk the camera around to show detections (person, chair, bicycle, etc.)
+- Emphasize predictive alert: when object is big/close, red translucent overlay and "HAZARD AHEAD" appears.
+
+Slide 5 (1:45-2:10) — Tech & Architecture
+- Mention TensorFlow.js, browser-only processing, future model plans.
+
+Slide 6 (2:10-2:30) — Closing
+- Next steps and call to action: GitHub link, invite judges to try the demo.
